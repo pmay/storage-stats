@@ -42,13 +42,6 @@ class RunningStat(object):
     def sd(self):
         return math.sqrt(self.variance())
 
-def generate_stats(filesizes):
-    stats = {}
-    for ext in filesizes.keys():
-        lengths = filesizes[ext]
-        stats[ext] = (len(lengths), min(lengths), numpy.mean(lengths), numpy.std(lengths), max(lengths))
-    return stats
-
 # Requires stats to be a dictionary of 5-tuples (length, min, mean, sd, max)
 def print_stats(statsdict, filesizes):
     for ext in statsdict.keys():
@@ -71,14 +64,6 @@ def print_stats(statsdict, filesizes):
         #print max_size,
         print filesizes[ext]
 
-def ps_comp(old, new):
-    for ext in old.keys():
-        print ext.ljust(5),
-        print old[ext][0], old[ext][2], old[ext][3],
-        print new[ext].numberValues(),
-        print new[ext].mean(),
-        print new[ext].sd()
-
 def ps(new):
     for ext in new.keys():
 
@@ -95,7 +80,6 @@ def write_csv(csv_file, statsdict):
             stats = statsdict[ext]
             statswriter.writerow(stats[0], stats[1], stats[2], stats[3], stats[4])
 
-filesizes = {}
 filestats = {}
 
 def process_directory(path):
@@ -112,9 +96,6 @@ def process_directory(path):
 
 # summarise
 process_directory(path)
-#stats = generate_stats(filesizes)
-#print_stats(stats, filesizes)
-#ps_comp(stats, filestats)
 ps(filestats)
 
 # def main():
