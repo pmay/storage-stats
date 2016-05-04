@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 __author__ = 'Peter May'
 
@@ -6,11 +6,7 @@ import argparse
 import csv
 import locale
 import math
-import numpy
 import os
-
-path = r'C:\Data'
-
 
 class RunningStat(object):
     def __init__(self):
@@ -18,20 +14,35 @@ class RunningStat(object):
         self.m = 0.0
         self.M2 = 0.0
 
+        self.min = 0.0
+        self.max = 0.0
+
     def add(self, x):
         self.n += 1
         delta = x - self.m
         self.m += delta/self.n
         self.M2 += delta*(x-self.m)
 
+        if (self.n==1):
+            self.min = x
+            self.max = x
+        else:
+            if (x < self.min):
+                self.min = x
+            if (x > self.max):
+                self.max = x
+
     def numberValues(self):
         return self.n
 
-    def mean(self):
-        if (self.n > 0):
-            return self.m
-        else:
-            return 0.0
+    def getMin(self):
+        return self.min
+
+    def getMax(self):
+        return self.max
+
+    def getMean(self):
+        return self.m
 
     def variance(self):
         if (self.n > 1):
@@ -42,35 +53,22 @@ class RunningStat(object):
     def sd(self):
         return math.sqrt(self.variance())
 
-# Requires stats to be a dictionary of 5-tuples (length, min, mean, sd, max)
-def print_stats(statsdict, filesizes):
-    for ext in statsdict.keys():
-        stats = statsdict[ext]
+def print_stats(new):
+    print 'Ext'.ljust(5), \
+          '# values'.rjust(12), \
+          ' Min Size (bytes)'.rjust(18), \
+          'Mean Size (bytes)'.rjust(18), \
+          'S.D.'.rjust(12), \
+          ' Max Size (bytes)'.rjust(18)
 
-        #num_size = locale.format('%5.0f', stats[0], 3)
-        #min_size = locale.format('%12.0f', stats[1])
-        #avg_size = locale.format('%12.0f', stats[2])
-        #sd_size  = locale.format('%12.0f', stats[3])
-        #max_size = locale.format('%12.0f', stats[4])
-
-        print ext.ljust(5),
-        print stats[0],
-        print stats[2],
-        print stats[3],
-        #print num_size,
-        #print min_size,
-        #print avg_size,
-        #print sd_size,
-        #print max_size,
-        print filesizes[ext]
-
-def ps(new):
     for ext in new.keys():
 
         print ext.ljust(5),
-        print new[ext].numberValues(),
-        print new[ext].mean(),
-        print new[ext].sd()
+        print locale.format('%12.0f', new[ext].numberValues()),
+        print locale.format('%18.0f', new[ext].getMin()),
+        print locale.format('%18.0f', new[ext].getMean()),
+        print locale.format('%12.0f', new[ext].sd()),
+        print locale.format('%18.0f', new[ext].getMax())
 
 def write_csv(csv_file, statsdict):
     with open(csv_file, 'wb') as csvfile:
@@ -94,12 +92,14 @@ def process_directory(path):
                     filestats[fext] = RunningStat()
                 filestats[fext].add(os.stat(filename).st_size)
 
-# summarise
-process_directory(path)
-ps(filestats)
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser(description="Calculates file size statistics for the specified folder")
+    ap.add_argument("path", help="the folder to characterise")
+    args = ap.parse_args()
 
-# def main():
-#     process_directory()
-#
-# if __name__ == "__main__":
-#     main()
+    if args.path is not None:
+        # process the specified directory and print the stats
+        process_directory(args.path)
+        print_stats(filestats)
+
+
