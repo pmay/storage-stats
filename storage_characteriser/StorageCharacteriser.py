@@ -10,6 +10,7 @@ import csv
 import locale
 import math
 import os
+import progressbar
 
 class RunningStat(object):
     """ Object for capturing statistics related to a specific file extension.
@@ -135,6 +136,8 @@ def process_directory(path, recursive):
     :param recursive: true if processing should include sub-directories
     :return:
     """
+    bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength)
+
     # grab file extension and file sizes across all files in the specified directory
     for root, dirs, files in os.walk(path):
         # if only processing the top level, remove dirs so os.walk doesn't progress further
@@ -149,23 +152,7 @@ def process_directory(path, recursive):
                 if(not filestats.has_key(fext)):
                     filestats[fext] = RunningStat()
                 filestats[fext].add(os.stat(filename).st_size)
+            bar.update()
 
-if __name__ == "__main__":
-    ### Process CLI arguments ###
-    ap = argparse.ArgumentParser(description="Calculates file size statistics for the specified folder")
-    ap.add_argument("path", help="the folder to characterise")
-    ap.add_argument("-o", dest="output", help="CSV file to output statistics too")
-    ap.add_argument("--no-recursion", dest="recursive", action="store_false", help="do not include sub-folders in stats")
-    ap.add_argument("-s", "--silent", dest="silent", action="store_true", help="turn off command line output")
-    args = ap.parse_args()
 
-    if args.path:
-        # process the specified directory and print the stats
-        process_directory(args.path, args.recursive)
-
-        if not args.silent:
-            print_stats(filestats)
-
-        if args.output:
-            write_csv(args.output, filestats)
 
