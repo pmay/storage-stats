@@ -19,13 +19,14 @@ def main(args=None):
 
     if args.path:
         # process the specified directory and print the stats
-        sc.process_directory(args.path, args.recursive)
+        characteriser = sc.Characteriser()
+        characteriser.process_directory(args.path, args.recursive)
 
         if not args.silent:
-            sc.print_stats(sc.filestats)
+            characteriser.print_stats()
 
         if args.output:
-            sc.write_csv(args.output, sc.filestats)
+            characteriser.write_csv(args.output)
 
 if __name__ == "__main__":
     main()

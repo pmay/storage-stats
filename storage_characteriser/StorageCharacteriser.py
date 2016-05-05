@@ -90,69 +90,75 @@ class RunningStat(object):
         """
         return math.sqrt(self.variance())
 
-def print_stats(stats):
-    """ Prints the specified statistics to the console in a tabular form
-    :param stats: dictionary <ext, RunningStat> containing file size statistics
-    :return:
-    """
-    print 'Ext'.ljust(5), \
-          '# values'.rjust(12), \
-          ' Min Size (bytes)'.rjust(18), \
-          'Mean Size (bytes)'.rjust(18), \
-          'S.D.'.rjust(12), \
-          ' Max Size (bytes)'.rjust(18)
+class Characteriser(object):
+    def __init__(self):
+        """ Initialises the Characteriser object
+        """
+        self.filestats = {}
 
-    for ext in stats.keys():
+    def process_directory(self, path, recursive):
+        """ Processes the specified directory, extracting file sizes for each file and
+            adding to a file extension indexed dictionary.
+        :param path: the path to analyse
+        :param recursive: true if processing should include sub-directories
+        :return:
+        """
+        bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength)
 
-        print ext.ljust(5),
-        print locale.format('%12.0f', stats[ext].numberValues()),
-        print locale.format('%18.0f', stats[ext].getMin()),
-        print locale.format('%18.0f', stats[ext].getMean()),
-        print locale.format('%12.0f', stats[ext].sd()),
-        print locale.format('%18.0f', stats[ext].getMax())
+        # grab file extension and file sizes across all files in the specified directory
+        for root, dirs, files in os.walk(path):
+            # if only processing the top level, remove dirs so os.walk doesn't progress further
+            if not recursive:
+                del dirs[:]
 
-def write_csv(csv_file, statsdict):
-    """ Writes the file size statistics to the specified CSV file
-    :param csv_file: path of the CSV file to create
-    :param statsdict: dictionary <ext, RunningStat> containing statistics
-    :return:
-    """
-    with open(csv_file, 'wb') as csvfile:
-        statswriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-        header = ['Ext','# Values', 'Min Size (bytes)', 'Mean Size (bytes)', 'S.D.', 'Max Size (bytes)']
-        statswriter.writerow(header)
+            for name in files:
+                filename = os.path.join(root, name)
+                fname, fext = os.path.splitext(filename)
 
-        for ext in statsdict.keys():
-            stats = statsdict[ext]
-            row = [ext,stats.numberValues(), stats.getMin(), stats.getMean(), stats.sd(), stats.getMax()]
-            statswriter.writerow(row)
+                if (os.path.exists(filename)):
+                    if(not self.filestats.has_key(fext)):
+                        self.filestats[fext] = RunningStat()
+                    self.filestats[fext].add(os.stat(filename).st_size)
+                bar.update()
 
-filestats = {}
+    def clear_stats(self):
+        """ Clears the file statistics directory
+        """
+        self.filestats = {}
 
-def process_directory(path, recursive):
-    """ Processes the specified directory, extracting file sizes for each file and
-        adding to a file extension indexed dictionary.
-    :param path: the path to analyse
-    :param recursive: true if processing should include sub-directories
-    :return:
-    """
-    bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength)
+    def print_stats(self):
+        """ Prints the specified statistics to the console in a tabular form
+        :param stats: dictionary <ext, RunningStat> containing file size statistics
+        :return:
+        """
+        print 'Ext'.ljust(5), \
+              '# values'.rjust(12), \
+              ' Min Size (bytes)'.rjust(18), \
+              'Mean Size (bytes)'.rjust(18), \
+              'S.D.'.rjust(12), \
+              ' Max Size (bytes)'.rjust(18)
 
-    # grab file extension and file sizes across all files in the specified directory
-    for root, dirs, files in os.walk(path):
-        # if only processing the top level, remove dirs so os.walk doesn't progress further
-        if not recursive:
-            del dirs[:]
+        for ext in self.filestats.keys():
 
-        for name in files:
-            filename = os.path.join(root, name)
-            fname, fext = os.path.splitext(filename)
+            print ext.ljust(5),
+            print locale.format('%12.0f', self.filestats[ext].numberValues()),
+            print locale.format('%18.0f', self.filestats[ext].getMin()),
+            print locale.format('%18.0f', self.filestats[ext].getMean()),
+            print locale.format('%12.0f', self.filestats[ext].sd()),
+            print locale.format('%18.0f', self.filestats[ext].getMax())
 
-            if (os.path.exists(filename)):
-                if(not filestats.has_key(fext)):
-                    filestats[fext] = RunningStat()
-                filestats[fext].add(os.stat(filename).st_size)
-            bar.update()
+    def write_csv(self, csv_file):
+        """ Writes the file size statistics to the specified CSV file
+        :param csv_file: path of the CSV file to create
+        :param statsdict: dictionary <ext, RunningStat> containing statistics
+        :return:
+        """
+        with open(csv_file, 'wb') as csvfile:
+            statswriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+            header = ['Ext','# Values', 'Min Size (bytes)', 'Mean Size (bytes)', 'S.D.', 'Max Size (bytes)']
+            statswriter.writerow(header)
 
-
-
+            for ext in statsdict.keys():
+                stats = statsdict[ext]
+                row = [ext,stats.numberValues(), stats.getMin(), stats.getMean(), stats.sd(), stats.getMax()]
+                statswriter.writerow(row)
