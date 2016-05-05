@@ -1,17 +1,17 @@
 from setuptools import setup
 
 setup(
-    name='storage_characteriser',
+    name='storage_stats',
     version='0.1',
-    packages=['storage_characteriser'],
+    packages=['storage_stats'],
     url='',
-    license='Apache 2',
+    license='Apache v2',
     author='Peter May',
     author_email='Peter.May@bl.uk',
     description='Calculates count and average file size of files recorded by file extension',
     entry_points={
         'console_scripts': [
-            'storage_characteriser = storage_characteriser.__main__:main'
+            'storage_stats = storage_stats.__main__:main'
         ]
     },
     install_requires=[
