@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+""" Program for capturing statistics about file sizes in a specified directory.
+    Captures minimum, maximum, mean and standard deviation of file sizes.
+"""
 __author__ = 'Peter May'
 
 import argparse
@@ -13,7 +16,7 @@ class RunningStat(object):
         Captures minimum file size, maximum file size, and the running population
         mean and standard deviation.
 
-        Code adapted from wiki page...
+        Code adapted from wiki page https://en.m.wikipedia.org/wiki/Algorithms_for_calculating_variance
     """
     def __init__(self):
         self.n = 0
@@ -125,14 +128,19 @@ def write_csv(csv_file, statsdict):
 
 filestats = {}
 
-def process_directory(path):
+def process_directory(path, recursive):
     """ Processes the specified directory, extracting file sizes for each file and
         adding to a file extension indexed dictionary.
     :param path: the path to analyse
+    :param recursive: true if processing should include sub-directories
     :return:
     """
     # grab file extension and file sizes across all files in the specified directory
     for root, dirs, files in os.walk(path):
+        # if only processing the top level, remove dirs so os.walk doesn't progress further
+        if not recursive:
+            del dirs[:]
+
         for name in files:
             filename = os.path.join(root, name)
             fname, fext = os.path.splitext(filename)
@@ -146,13 +154,18 @@ if __name__ == "__main__":
     ### Process CLI arguments ###
     ap = argparse.ArgumentParser(description="Calculates file size statistics for the specified folder")
     ap.add_argument("path", help="the folder to characterise")
-    ap.add_argument("-o", "--output", dest="output", help="CSV file to output statistics too")
+    ap.add_argument("-o", dest="output", help="CSV file to output statistics too")
+    ap.add_argument("--no-recursion", dest="recursive", action="store_false", help="do not include sub-folders in stats")
+    ap.add_argument("-s", "--silent", dest="silent", action="store_true", help="turn off command line output")
     args = ap.parse_args()
 
     if args.path:
         # process the specified directory and print the stats
-        process_directory(args.path)
-        print_stats(filestats)
+        process_directory(args.path, args.recursive)
+
+        if not args.silent:
+            print_stats(filestats)
+
         if args.output:
             write_csv(args.output, filestats)
 
