@@ -53,7 +53,7 @@ class RunningStat(object):
     def sd(self):
         return math.sqrt(self.variance())
 
-def print_stats(new):
+def print_stats(stats):
     print 'Ext'.ljust(5), \
           '# values'.rjust(12), \
           ' Min Size (bytes)'.rjust(18), \
@@ -61,22 +61,25 @@ def print_stats(new):
           'S.D.'.rjust(12), \
           ' Max Size (bytes)'.rjust(18)
 
-    for ext in new.keys():
+    for ext in stats.keys():
 
         print ext.ljust(5),
-        print locale.format('%12.0f', new[ext].numberValues()),
-        print locale.format('%18.0f', new[ext].getMin()),
-        print locale.format('%18.0f', new[ext].getMean()),
-        print locale.format('%12.0f', new[ext].sd()),
-        print locale.format('%18.0f', new[ext].getMax())
+        print locale.format('%12.0f', stats[ext].numberValues()),
+        print locale.format('%18.0f', stats[ext].getMin()),
+        print locale.format('%18.0f', stats[ext].getMean()),
+        print locale.format('%12.0f', stats[ext].sd()),
+        print locale.format('%18.0f', stats[ext].getMax())
 
 def write_csv(csv_file, statsdict):
     with open(csv_file, 'wb') as csvfile:
         statswriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        header = ['Ext','# Values', 'Min Size (bytes)', 'Mean Size (bytes)', 'S.D.', 'Max Size (bytes)']
+        statswriter.writerow(header)
 
-        for ext in statsdict.keys:
+        for ext in statsdict.keys():
             stats = statsdict[ext]
-            statswriter.writerow(stats[0], stats[1], stats[2], stats[3], stats[4])
+            row = [ext,stats.numberValues(), stats.getMin(), stats.getMean(), stats.sd(), stats.getMax()]
+            statswriter.writerow(row)
 
 filestats = {}
 
@@ -95,11 +98,13 @@ def process_directory(path):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Calculates file size statistics for the specified folder")
     ap.add_argument("path", help="the folder to characterise")
+    ap.add_argument("-o", "--output", dest="output", help="CSV file to output statistics too")
     args = ap.parse_args()
 
-    if args.path is not None:
+    if args.path:
         # process the specified directory and print the stats
         process_directory(args.path)
         print_stats(filestats)
-
+        if args.output:
+            write_csv(args.output, filestats)
 
