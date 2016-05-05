@@ -5,12 +5,12 @@
 """
 __author__ = 'Peter May'
 
-import argparse
 import csv
 import locale
 import math
 import os
 import progressbar
+
 
 class RunningStat(object):
     """ Object for capturing statistics related to a specific file extension.
@@ -39,34 +39,34 @@ class RunningStat(object):
         self.m += delta/self.n
         self.M2 += delta*(x-self.m)
 
-        if (self.n==1):
+        if self.n == 1:
             self.min = x
             self.max = x
         else:
-            if (x < self.min):
+            if x < self.min:
                 self.min = x
-            if (x > self.max):
+            if x > self.max:
                 self.max = x
 
-    def numberValues(self):
+    def numbervalues(self):
         """ Returns the number of file sizes added for this file extension
         :return: the number of file size values added
         """
         return self.n
 
-    def getMin(self):
+    def getmin(self):
         """ Returns the minimum file size added for this file extension
         :return: the minimum file size
         """
         return self.min
 
-    def getMax(self):
+    def getmax(self):
         """ Returns the maximum file size added for this extension
         :return: the maximum file size
         """
         return self.max
 
-    def getMean(self):
+    def getmean(self):
         """ Returns the running mean average file size for all sizes added
             when this method is called
         :return: the population mean average file size
@@ -78,8 +78,8 @@ class RunningStat(object):
             when this method is called
         :return: the variance in file sizes about the mean
         """
-        if (self.n > 1):
-            return self.M2/(self.n)
+        if self.n > 1:
+            return self.M2/self.n
         else:
             return 0.0
 
@@ -89,6 +89,7 @@ class RunningStat(object):
         :return: the standard deviation in file sizes about the mean
         """
         return math.sqrt(self.variance())
+
 
 class Characteriser(object):
     def __init__(self):
@@ -115,8 +116,8 @@ class Characteriser(object):
                 filename = os.path.join(root, name)
                 fname, fext = os.path.splitext(filename)
 
-                if (os.path.exists(filename)):
-                    if(not self.filestats.has_key(fext)):
+                if os.path.exists(filename):
+                    if fext not in self.filestats:
                         self.filestats[fext] = RunningStat()
                     self.filestats[fext].add(os.stat(filename).st_size)
                 bar.update()
@@ -128,7 +129,6 @@ class Characteriser(object):
 
     def print_stats(self):
         """ Prints the specified statistics to the console in a tabular form
-        :param stats: dictionary <ext, RunningStat> containing file size statistics
         :return:
         """
         print 'Ext'.ljust(5), \
@@ -141,24 +141,23 @@ class Characteriser(object):
         for ext in self.filestats.keys():
 
             print ext.ljust(5),
-            print locale.format('%12.0f', self.filestats[ext].numberValues()),
-            print locale.format('%18.0f', self.filestats[ext].getMin()),
-            print locale.format('%18.0f', self.filestats[ext].getMean()),
+            print locale.format('%12.0f', self.filestats[ext].numbervalues()),
+            print locale.format('%18.0f', self.filestats[ext].getmin()),
+            print locale.format('%18.0f', self.filestats[ext].getmean()),
             print locale.format('%12.0f', self.filestats[ext].sd()),
-            print locale.format('%18.0f', self.filestats[ext].getMax())
+            print locale.format('%18.0f', self.filestats[ext].getmax())
 
     def write_csv(self, csv_file):
         """ Writes the file size statistics to the specified CSV file
         :param csv_file: path of the CSV file to create
-        :param statsdict: dictionary <ext, RunningStat> containing statistics
         :return:
         """
         with open(csv_file, 'wb') as csvfile:
             statswriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-            header = ['Ext','# Values', 'Min Size (bytes)', 'Mean Size (bytes)', 'S.D.', 'Max Size (bytes)']
+            header = ['Ext', '# Values', 'Min Size (bytes)', 'Mean Size (bytes)', 'S.D.', 'Max Size (bytes)']
             statswriter.writerow(header)
 
-            for ext in statsdict.keys():
-                stats = statsdict[ext]
-                row = [ext,stats.numberValues(), stats.getMin(), stats.getMean(), stats.sd(), stats.getMax()]
+            for ext in self.filestats.keys():
+                stats = self.filestats[ext]
+                row = [ext, stats.numberValues(), stats.getMin(), stats.getMean(), stats.sd(), stats.getMax()]
                 statswriter.writerow(row)

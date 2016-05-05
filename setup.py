@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='storage_characteriser',
@@ -13,5 +13,8 @@ setup(
         'console_scripts': [
             'storage_characteriser = storage_characteriser.__main__:main'
         ]
-    }
+    },
+    install_requires=[
+        "progressbar2"
+    ]
 )
