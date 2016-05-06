@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='storage_stats',
+    name='storage-stats',
     version='0.1',
     packages=['storage_stats'],
     url='',
