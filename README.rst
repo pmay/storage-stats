@@ -14,7 +14,7 @@ Intallation
 Documentation
 =============
 
-Usage: ``storage-stats [-h] [-o OUTPUT] [--no-recursion] [-s] path``
+Usage: ``storage_stats [-h] [-o OUTPUT] [--no-recursion] [-s] path``
 
 Calculates file size statistics for the specified folder
 

@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(
-    name='storage-stats',
+    name='storagestats',
     version='0.1',
-    packages=['storage_stats'],
+    packages=['storagestats'],
     url='',
     license='Apache v2',
     author='Peter May',
@@ -11,7 +11,7 @@ setup(
     description='Calculates count and average file size of files recorded by file extension',
     entry_points={
         'console_scripts': [
-            'storage_stats = storage_stats.__main__:main'
+            'storagestats = storagestats.__main__:main'
         ]
     },
     install_requires=[

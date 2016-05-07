@@ -2,7 +2,7 @@ __author__ = 'pmay'
 
 import argparse
 import sys
-import storagestats as sc
+import storagestats as ss
 
 
 def main(args=None):
@@ -10,7 +10,8 @@ def main(args=None):
         args = sys.argv[1:]
 
     # Process CLI arguments #
-    ap = argparse.ArgumentParser(description="Calculates file size statistics for the specified folder")
+    ap = argparse.ArgumentParser(prog="storagestats",
+                                 description="Calculates file size statistics for the specified folder")
     ap.add_argument("path", help="the folder to characterise")
     ap.add_argument("-o", dest="output", help="CSV file to output statistics too")
     ap.add_argument("--no-recursion", dest="recursive", action="store_false",
@@ -21,7 +22,7 @@ def main(args=None):
 
     if args.path:
         # process the specified directory and print the stats
-        characteriser = sc.Characteriser()
+        characteriser = ss.Characteriser()
         characteriser.process_directory(args.path, args.recursive)
 
         if not args.silent:
