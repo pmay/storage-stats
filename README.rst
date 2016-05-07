@@ -7,14 +7,15 @@ Calculates statistics about minimum, maximum and mean average file sizes for eac
 Intallation
 ===========
 
+(When I've uploaded it)...
 ::
 
-    pip install storage_stats
+    pip install storagestats
 
 Documentation
 =============
 
-Usage: ``storage_stats [-h] [-o OUTPUT] [--no-recursion] [-s] path``
+Usage: ``storagestats [-h] [-o OUTPUT] [--no-recursion] [-s] path``
 
 Calculates file size statistics for the specified folder
 
@@ -31,11 +32,11 @@ optional arguments:
 Licence
 =======
 
-Released under [Apache version 2.0 license](LICENSE).
+Released under `Apache version 2.0 license <LICENSE>`_.
 
 Contribute
 ==========
 
-1. [Fork the GitHub project](https://help.github.com/articles/fork-a-repo)
+1. `Fork the GitHub project <https://help.github.com/articles/fork-a-repo>`_
 2. Change the code and push into the forked project
-3. [Submit a pull request](https://help.github.com/articles/using-pull-requests)
+3. `Submit a pull request <https://help.github.com/articles/using-pull-requests>`_
