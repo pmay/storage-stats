@@ -15,7 +15,7 @@
 from setuptools import setup
 
 setup(
-    name='storagestats',
+    name='storage_stats',
     version='0.1',
     packages=['storagestats'],
     url='https://github.com/pmay/storage-stats',
@@ -25,10 +25,24 @@ setup(
     description='Calculates count and average file size of files recorded by file extension',
     entry_points={
         'console_scripts': [
-            'storagestats = storagestats.__main__:main'
+            'storage_stats = storagestats.__main__:main'
         ]
     },
     install_requires=[
         "progressbar2"
+    ],
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+
+        # Indicate who your project is intended for
+        'Intended Audience :: End Users/Desktop',
+        'Topic :: Utilities',
+
+        # Pick your license as you wish (should match "license" above)
+        'License :: OSI Approved :: Apache Software License',
+
+        # Specify the Python versions you support here. In particular, ensure
+        # that you indicate whether you support Python 2, Python 3 or both.
+        'Programming Language :: Python :: 2.7',
     ]
 )

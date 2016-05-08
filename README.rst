@@ -1,5 +1,5 @@
 =============
-Storage-Stats
+Storage Stats
 =============
 
 Calculates statistics about minimum, maximum and mean average file sizes for each file extension within a directory.
@@ -9,15 +9,14 @@ Calculates statistics about minimum, maximum and mean average file sizes for eac
 Intallation
 ===========
 
-(When I've uploaded it)...
 ::
 
-    pip install storagestats
+    pip install storage_stats
 
 Documentation
 =============
 
-Usage: ``storagestats [-h] [-o OUTPUT] [--no-recursion] [-s] path``
+Usage: ``storage_stats [-h] [-o OUTPUT] [--no-recursion] [-s] path``
 
 Calculates file size statistics for the specified folder
 

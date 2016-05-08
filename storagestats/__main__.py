@@ -24,7 +24,7 @@ def main(args=None):
         args = sys.argv[1:]
 
     # Process CLI arguments #
-    ap = argparse.ArgumentParser(prog="storagestats",
+    ap = argparse.ArgumentParser(prog="storage_stats",
                                  description="Calculates file size statistics for the specified folder")
     ap.add_argument("path", help="the folder to characterise")
     ap.add_argument("-o", dest="output", help="CSV file to output statistics too")
