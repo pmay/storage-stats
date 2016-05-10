@@ -164,17 +164,14 @@ class Characteriser(object):
         """ Prints the specified statistics to the console in a tabular form
         :return:
         """
-        print ""
-        print 'Ext'.ljust(5), \
-              '# values'.rjust(12), \
-              ' Min Size (bytes)'.rjust(18), \
-              'Mean Size (bytes)'.rjust(18), \
-              'S.D.'.rjust(12), \
-              ' Max Size (bytes)'.rjust(18)
 
         # get maximum key length and use to create formatting string
         maxkeylen = len(max(self.filestats, key=len))
+        hdrstring = "{:<"+str(maxkeylen)+"} {:>12} {:>18} {:>18} {:>12} {:>18}"
         fmtstring = "{:<"+str(maxkeylen)+"} {:>12d} {:>18.0f} {:>18.0f} {:>12.0f} {:>18.0f}"
+
+        print ""
+        print hdrstring.format("Ext", "# values", "Min Size (bytes)", "Mean Size (bytes)", "S.D.", "Max Size (bytes)")
 
         for ext in sorted(self.filestats.keys()):
             print fmtstring.format(ext,
