@@ -20,7 +20,6 @@
 __author__ = 'Peter May'
 
 import csv
-import locale
 import math
 import os
 import progressbar
@@ -154,6 +153,7 @@ class Characteriser(object):
                         self.filestats[fext] = RunningStat()
                     self.filestats[fext].add(os.stat(filename).st_size)
                 bar.update(bar.value+1)
+        bar.finish()
 
     def clear_stats(self):
         """ Clears the file statistics directory
@@ -172,14 +172,17 @@ class Characteriser(object):
               'S.D.'.rjust(12), \
               ' Max Size (bytes)'.rjust(18)
 
-        for ext in self.filestats.keys():
+        # get maximum key length and use to create formatting string
+        maxkeylen = len(max(self.filestats, key=len))
+        fmtstring = "{:<"+str(maxkeylen)+"} {:>12d} {:>18.0f} {:>18.0f} {:>12.0f} {:>18.0f}"
 
-            print ext.ljust(5),
-            print locale.format('%12.0f', self.filestats[ext].numbervalues()),
-            print locale.format('%18.0f', self.filestats[ext].getmin()),
-            print locale.format('%18.0f', self.filestats[ext].getmean()),
-            print locale.format('%12.0f', self.filestats[ext].sd()),
-            print locale.format('%18.0f', self.filestats[ext].getmax())
+        for ext in sorted(self.filestats.keys()):
+            print fmtstring.format(ext,
+                                   self.filestats[ext].numbervalues(),
+                                   self.filestats[ext].getmin(),
+                                   self.filestats[ext].getmean(),
+                                   self.filestats[ext].sd(),
+                                   self.filestats[ext].getmax())
 
     def write_csv(self, csv_file):
         """ Writes the file size statistics to the specified CSV file

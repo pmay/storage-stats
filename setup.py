@@ -16,7 +16,7 @@ from setuptools import setup
 
 setup(
     name='storage_stats',
-    version='0.1',
+    version='0.2',
     packages=['storagestats'],
     url='https://github.com/pmay/storage-stats',
     license='Apache v2',
@@ -29,8 +29,8 @@ setup(
         ]
     },
     install_requires=[
-        "progressbar2",
-        "scandir"
+        "progressbar2>=3.6.2",
+        "scandir>=1.2"
     ],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
