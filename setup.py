@@ -29,7 +29,8 @@ setup(
         ]
     },
     install_requires=[
-        "progressbar2"
+        "progressbar2",
+        "scandir"
     ],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',

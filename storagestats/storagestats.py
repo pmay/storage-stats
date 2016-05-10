@@ -24,6 +24,7 @@ import locale
 import math
 import os
 import progressbar
+import scandir
 
 
 class RunningStat(object):
@@ -111,17 +112,35 @@ class Characteriser(object):
         """
         self.filestats = {}
 
-    def process_directory(self, path, recursive):
+    def _count_dirs(self, path, recursive=True):
+        """ Counts the number of files within the specified directory
+        :param path: the top level path to count files in
+        :param recursive: true if counting should include sub-directories
+        :return: the number of files in the specified path
+        """
+        count = 0;
+        for p in scandir.scandir(path):
+            if p.is_file():
+                count+=1
+            if recursive and p.is_dir():
+                count+=self._count_dirs(p.path)
+        return count
+
+    def process_directory(self, path, recursive=True):
         """ Processes the specified directory, extracting file sizes for each file and
             adding to a file extension indexed dictionary.
         :param path: the path to analyse
         :param recursive: true if processing should include sub-directories
         :return:
         """
-        bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength)
+
+        # get number of files - have to scan dir once to start with
+        numfiles = self._count_dirs(path)
+
+        bar = progressbar.ProgressBar().start(numfiles)
 
         # grab file extension and file sizes across all files in the specified directory
-        for root, dirs, files in os.walk(path):
+        for root, dirs, files in scandir.walk(path):
             # if only processing the top level, remove dirs so os.walk doesn't progress further
             if not recursive:
                 del dirs[:]
@@ -134,7 +153,7 @@ class Characteriser(object):
                     if fext not in self.filestats:
                         self.filestats[fext] = RunningStat()
                     self.filestats[fext].add(os.stat(filename).st_size)
-                bar.update()
+                bar.update(bar.value+1)
 
     def clear_stats(self):
         """ Clears the file statistics directory
@@ -145,6 +164,7 @@ class Characteriser(object):
         """ Prints the specified statistics to the console in a tabular form
         :return:
         """
+        print ""
         print 'Ext'.ljust(5), \
               '# values'.rjust(12), \
               ' Min Size (bytes)'.rjust(18), \
