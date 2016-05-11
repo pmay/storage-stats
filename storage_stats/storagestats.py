@@ -134,6 +134,7 @@ class Characteriser(object):
         """
 
         # get number of files - have to scan dir once to start with
+        print "Initialising..."
         numfiles = self._count_dirs(path)
 
         bar = progressbar.ProgressBar().start(numfiles)
