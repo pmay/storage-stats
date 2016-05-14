@@ -30,6 +30,8 @@ def main(args=None):
     ap.add_argument("-o", dest="output", help="CSV file to output statistics too")
     ap.add_argument("--no-recursion", dest="recursive", action="store_false",
                     help="do not include sub-folders in stats")
+    ap.add_argument("--no-timing", dest="timing", action="store_false",
+                    help="turn of preprocessing of directory to improve run-time")
     ap.add_argument("-s", "--silent", dest="silent", action="store_true",
                     help="turn off command line output (useful if you just want to output a CSV file")
     ap.add_argument("-v", "--version", action="version", version='%(prog)s v'+__version__, help="display program version")
@@ -38,7 +40,7 @@ def main(args=None):
     if args.path:
         # process the specified directory and print the stats
         characteriser = ss.Characteriser()
-        characteriser.process_directory(args.path, args.recursive)
+        characteriser.process_directory(args.path, args.recursive, args.timing)
 
         if not args.silent:
             characteriser.print_stats()

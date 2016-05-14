@@ -125,19 +125,23 @@ class Characteriser(object):
                 count+=self._count_dirs(p.path)
         return count
 
-    def process_directory(self, path, recursive=True):
+    def process_directory(self, path, recursive=True, timing=True):
         """ Processes the specified directory, extracting file sizes for each file and
             adding to a file extension indexed dictionary.
         :param path: the path to analyse
         :param recursive: true if processing should include sub-directories
+        :param timing: true if path should be preprocessed to provide guidance on run-time
         :return:
         """
 
         # get number of files - have to scan dir once to start with
         print "Initialising..."
-        numfiles = self._count_dirs(path)
+        bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength)
 
-        bar = progressbar.ProgressBar().start(numfiles)
+        # If user wants more accurate timing, preprocess directory to count files
+        if timing:
+            numfiles = self._count_dirs(path)
+            bar.start(numfiles)
 
         # grab file extension and file sizes across all files in the specified directory
         for root, dirs, files in scandir.walk(path):
