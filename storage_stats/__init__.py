@@ -13,3 +13,6 @@
 #    limitations under the License.
 
 __author__ = 'pmay'
+
+# storage_stats version
+__version__ = '0.2.1'

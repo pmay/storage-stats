@@ -12,20 +12,37 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+import codecs
+import os
+import re
 from setuptools import setup
+
+# Project version approach from http://python-packaging-user-guide.readthedocs.io/en/latest/single_source_version/
+# Version specified in storage_stats.__init__.py
+def read(*parts):
+    path = os.path.join(os.path.dirname(__file__), *parts)
+    with codecs.open(path, encoding='utf-8') as fobj:
+        return fobj.read()
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
 
 setup(
     name='storage_stats',
-    version='0.2',
-    packages=['storagestats'],
+    version=find_version('storage_stats', '__init__.py'),
+    packages=['storage_stats'],
     url='https://github.com/pmay/storage-stats',
-    license='Apache v2',
+    license='Apache Licence 2.0',
     author='Peter May',
     author_email='Peter.May@bl.uk',
     description='Calculates count and average file size of files recorded by file extension',
     entry_points={
         'console_scripts': [
-            'storage_stats = storagestats.__main__:main'
+            'storage_stats = storage_stats.__main__:main'
         ]
     },
     install_requires=[

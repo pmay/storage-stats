@@ -15,9 +15,9 @@
 __author__ = 'pmay'
 
 import argparse
-import sys
 import storagestats as ss
-
+import sys
+from . import __version__
 
 def main(args=None):
     if args is None:
@@ -32,6 +32,7 @@ def main(args=None):
                     help="do not include sub-folders in stats")
     ap.add_argument("-s", "--silent", dest="silent", action="store_true",
                     help="turn off command line output (useful if you just want to output a CSV file")
+    ap.add_argument("-v", "--version", action="version", version='%(prog)s v'+__version__, help="display program version")
     args = ap.parse_args()
 
     if args.path:
