@@ -35,6 +35,7 @@ setup(
     name='storage_stats',
     version=find_version('storage_stats', '__init__.py'),
     packages=['storage_stats'],
+    package_data={'storage_stats': ['data/*']},
     url='https://github.com/pmay/storage-stats',
     license='Apache Licence 2.0',
     author='Peter May',

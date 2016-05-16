@@ -24,6 +24,7 @@ import math
 import os
 import progressbar
 import scandir
+import sys
 from collections import defaultdict
 
 
@@ -118,8 +119,7 @@ class Characteriser(object):
         :return: a defaultdict of extension mappings
         """
         maps = defaultdict(lambda: None)
-        print os.path.dirname(__file__)
-        with open(os.path.join(os.path.dirname(__file__), 'extensionmapping'), 'r') as fmap:
+        with open(os.path.join(os.path.dirname(__file__), 'data', 'extensionmapping'), 'r') as fmap:
             for line in fmap.readlines():
                 linemaps = line.strip().split(",")
                 for e in linemaps:
