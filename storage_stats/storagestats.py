@@ -24,6 +24,7 @@ import math
 import os
 import progressbar
 import scandir
+from collections import defaultdict
 
 
 class RunningStat(object):
@@ -110,6 +111,31 @@ class Characteriser(object):
         """ Initialises the Characteriser object
         """
         self.filestats = {}
+        self.extmap = self._load_extension_mappings()
+
+    def _load_extension_mappings(self):
+        """ Loads file extension mappings, e.g. .jpeg to jpg
+        :return: a defaultdict of extension mappings
+        """
+        maps = defaultdict(lambda: None)
+        print os.path.dirname(__file__)
+        with open(os.path.join(os.path.dirname(__file__), 'extensionmapping'), 'r') as fmap:
+            for line in fmap.readlines():
+                linemaps = line.strip().split(",")
+                for e in linemaps:
+                    maps[e] = linemaps[0]
+        return maps
+
+    def _convert_extension(self, ext):
+        """ Converts the specified file extension to a known base extension,
+            e.g. .jpeg to .jpg
+        :param ext: the file extension to convert
+        :return: the converted file extension if mapping available, otherwise just the supplied extension
+        """
+        newext = self.extmap[ext]
+        if newext is None:
+            newext = ext
+        return newext
 
     def _count_dirs(self, path, recursive=True):
         """ Counts the number of files within the specified directory
@@ -152,6 +178,7 @@ class Characteriser(object):
             for name in files:
                 filename = os.path.join(root, name)
                 fname, fext = os.path.splitext(filename)
+                fext = self._convert_extension(fext.lower())   # lowercase all filenames
 
                 if os.path.exists(filename):
                     if fext not in self.filestats:
