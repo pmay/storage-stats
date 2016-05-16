@@ -24,6 +24,8 @@ import math
 import os
 import progressbar
 import scandir
+import sys
+from collections import defaultdict
 
 
 class RunningStat(object):
@@ -106,10 +108,41 @@ class RunningStat(object):
 
 
 class Characteriser(object):
-    def __init__(self):
-        """ Initialises the Characteriser object
+    def __init__(self, mapfile):
+        """ Initialises the Characteriser object. In particular, this loads (either the default or user specified)
+            file extension mappings. These are lists of similar file extensions that should be counted as the
+            same when aggregating results.
+        :param mapfile: text file specifying similar file extension mappings
         """
         self.filestats = {}
+        self.extmap = self._load_extension_mappings(mapfile)
+
+    def _load_extension_mappings(self, mapfile):
+        """ Loads file extension mappings, e.g. .jpeg to jpg
+        :param mapfile: text file specifying similar file extension mappings
+        :return: a defaultdict of extension mappings
+        """
+        maps = defaultdict(lambda: None)
+
+        if mapfile is None:
+            mapfile = os.path.join(os.path.dirname(__file__), 'data', 'extensionmapping')
+        with open(mapfile, 'r') as fmap:
+            for line in fmap.readlines():
+                linemaps = line.strip().split(",")
+                for e in linemaps:
+                    maps[e] = linemaps[0]
+        return maps
+
+    def _convert_extension(self, ext):
+        """ Converts the specified file extension to a known base extension,
+            e.g. .jpeg to .jpg
+        :param ext: the file extension to convert
+        :return: the converted file extension if mapping available, otherwise just the supplied extension
+        """
+        newext = self.extmap[ext]
+        if newext is None:
+            newext = ext
+        return newext
 
     def _count_dirs(self, path, recursive=True):
         """ Counts the number of files within the specified directory
@@ -125,19 +158,23 @@ class Characteriser(object):
                 count+=self._count_dirs(p.path)
         return count
 
-    def process_directory(self, path, recursive=True):
+    def process_directory(self, path, recursive=True, timing=True):
         """ Processes the specified directory, extracting file sizes for each file and
             adding to a file extension indexed dictionary.
         :param path: the path to analyse
         :param recursive: true if processing should include sub-directories
+        :param timing: true if path should be preprocessed to provide guidance on run-time
         :return:
         """
 
         # get number of files - have to scan dir once to start with
         print "Initialising..."
-        numfiles = self._count_dirs(path)
+        bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength)
 
-        bar = progressbar.ProgressBar().start(numfiles)
+        # If user wants more accurate timing, preprocess directory to count files
+        if timing:
+            numfiles = self._count_dirs(path)
+            bar.start(numfiles)
 
         # grab file extension and file sizes across all files in the specified directory
         for root, dirs, files in scandir.walk(path):
@@ -148,6 +185,7 @@ class Characteriser(object):
             for name in files:
                 filename = os.path.join(root, name)
                 fname, fext = os.path.splitext(filename)
+                fext = self._convert_extension(fext.lower())   # lowercase all filenames
 
                 if os.path.exists(filename):
                     if fext not in self.filestats:
