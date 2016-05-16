@@ -24,11 +24,30 @@ positional arguments:
   path            the folder to characterise
 
 optional arguments:
-  -h, --help      show this help message and exit
-  -o OUTPUT       CSV file to output statistics too
-  --no-recursion  do not include sub-folders in stats
-  -s, --silent    turn off command line output (useful if you just want to
-                  output a CSV file
+  -h, --help        Show the help message and exit
+  -e MAPFILE        User file overriding similar extension mappings
+  -o OUTPUT         CSV file to output statistics too
+  --no-recursion    Do not include sub-folders in stats
+  --no-timing       Turn off preprocessing of directory to improve run-time (no timing information provided)
+  -s, --silent      Turn off command line output (useful if you just want to output a CSV file)
+  -v, --version     Provide the version of this application
+
+MAPFILE
+-------
+MAPFILE should be a text file with one group of similar file extensions per line, separated by commas. Each line
+should be in lowercase and take the form:
+
+``.main_ext,.alt1,.alt2,etc``
+
+For example:
+
+::
+    .jpeg,.jpg
+    .tiff,.tif
+
+Note the period in each extension.
+
+The first extension listed will be the one referenced in the output.
 
 Licence
 =======

@@ -108,18 +108,25 @@ class RunningStat(object):
 
 
 class Characteriser(object):
-    def __init__(self):
-        """ Initialises the Characteriser object
+    def __init__(self, mapfile):
+        """ Initialises the Characteriser object. In particular, this loads (either the default or user specified)
+            file extension mappings. These are lists of similar file extensions that should be counted as the
+            same when aggregating results.
+        :param mapfile: text file specifying similar file extension mappings
         """
         self.filestats = {}
-        self.extmap = self._load_extension_mappings()
+        self.extmap = self._load_extension_mappings(mapfile)
 
-    def _load_extension_mappings(self):
+    def _load_extension_mappings(self, mapfile):
         """ Loads file extension mappings, e.g. .jpeg to jpg
+        :param mapfile: text file specifying similar file extension mappings
         :return: a defaultdict of extension mappings
         """
         maps = defaultdict(lambda: None)
-        with open(os.path.join(os.path.dirname(__file__), 'data', 'extensionmapping'), 'r') as fmap:
+
+        if mapfile is None:
+            mapfile = os.path.join(os.path.dirname(__file__), 'data', 'extensionmapping')
+        with open(mapfile, 'r') as fmap:
             for line in fmap.readlines():
                 linemaps = line.strip().split(",")
                 for e in linemaps:

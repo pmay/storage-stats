@@ -9,12 +9,14 @@ This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
 Added
 ~~~~~
-* CLI flag for preventing pre-counting of files in folder
 * File extension mapping file to map between similar file extensions, e.g. .jpeg and .jpg
+* CLI flag for preventing pre-counting of files in folder
+* CLI flag for allowing the user to specify a list of similar file extension mappings
 
 Changed
 ~~~~~~~
 * File extensions are converted to lowercase
+* Updated README
 
 
 [0.2.1] - 2016-05-11
