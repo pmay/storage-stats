@@ -16,7 +16,7 @@ Intallation
 Documentation
 =============
 
-Usage: ``storage_stats [-h] [-o OUTPUT] [--no-recursion] [-s] path``
+Usage: ``storage_stats [-h] [-e MAPFILE] [-o OUTPUT] [--no-recursion] [--no-timing] [-s] [-v] path``
 
 Calculates file size statistics for the specified folder
 
