@@ -42,6 +42,7 @@ should be in lowercase and take the form:
 For example:
 
 ::
+
     .jpeg,.jpg
     .tiff,.tif
 
