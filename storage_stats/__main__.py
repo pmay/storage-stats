@@ -15,9 +15,9 @@
 __author__ = 'pmay'
 
 import argparse
-import storagestats as ss
 import sys
 from storage_stats import __version__
+from storage_stats import storagestats
 
 def main(args=None):
     if args is None:
@@ -45,7 +45,7 @@ def main(args=None):
 
     if args.path:
         # process the specified directory and print the stats
-        characteriser = ss.Characteriser(args.mapfile)
+        characteriser = storagestats.Characteriser(args.mapfile)
         characteriser.process_directory(args.path, args.recursive, args.timing)
 
         if not args.silent:

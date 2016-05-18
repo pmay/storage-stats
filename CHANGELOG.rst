@@ -4,6 +4,20 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
+[0.3.1] - 2016-05-18
+--------------------
+
+Changed
+~~~~~~~
+* Adjusted import lines to enable PyInstaller to work
+* Updated README
+
+Fixed
+~~~~~
+* Amended directory counting to cope with restricted permissions access to directories
+* Ensured directory counting adheres to user specified directory recursion request
+* Adjusted walk of directory so that symbolic links are not followed
+
 [0.3.0] - 2016-05-16
 --------------------
 

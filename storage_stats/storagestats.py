@@ -24,7 +24,6 @@ import math
 import os
 import progressbar
 import scandir
-import sys
 from collections import defaultdict
 
 
@@ -150,12 +149,16 @@ class Characteriser(object):
         :param recursive: true if counting should include sub-directories
         :return: the number of files in the specified path
         """
-        count = 0;
-        for p in scandir.scandir(path):
-            if p.is_file():
-                count+=1
-            if recursive and p.is_dir():
-                count+=self._count_dirs(p.path)
+        count = 0
+        try:
+            for p in scandir.scandir(path):
+                if p.is_file():
+                    count += 1
+                if recursive and p.is_dir():
+                    count += self._count_dirs(p.path, recursive)
+        except (IOError, OSError) as e:
+            print "Permission Error ({0}): {1} for {2}".format(e.errno, e.strerror, path)
+
         return count
 
     def process_directory(self, path, recursive=True, timing=True):
@@ -173,11 +176,11 @@ class Characteriser(object):
 
         # If user wants more accurate timing, preprocess directory to count files
         if timing:
-            numfiles = self._count_dirs(path)
+            numfiles = self._count_dirs(path, recursive)
             bar.start(numfiles)
 
         # grab file extension and file sizes across all files in the specified directory
-        for root, dirs, files in scandir.walk(path):
+        for root, dirs, files in scandir.walk(path, followlinks=False):
             # if only processing the top level, remove dirs so os.walk doesn't progress further
             if not recursive:
                 del dirs[:]
