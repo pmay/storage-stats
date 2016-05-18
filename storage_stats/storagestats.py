@@ -24,9 +24,7 @@ import math
 import os
 import progressbar
 import scandir
-import sys
 from collections import defaultdict
-from errno import EACCES, EPERM
 
 
 class RunningStat(object):
@@ -151,13 +149,13 @@ class Characteriser(object):
         :param recursive: true if counting should include sub-directories
         :return: the number of files in the specified path
         """
-        count = 0;
+        count = 0
         try:
             for p in scandir.scandir(path):
                 if p.is_file():
-                    count+=1
+                    count += 1
                 if recursive and p.is_dir():
-                    count+=self._count_dirs(p.path, recursive)
+                    count += self._count_dirs(p.path, recursive)
         except (IOError, OSError) as e:
             print "Permission Error ({0}): {1} for {2}".format(e.errno, e.strerror, path)
 
