@@ -34,6 +34,8 @@ optional arguments:
   -v, --version     Provide the version of this application
 
 If multiple folders are specified, the results are aggregated together, unless the --no-aggregation flag is used.
+If --no-aggregation is specified along with the -o (output csv file) flag, then one csv file will be created per
+input folder (by appending a "-<index>" onto the end of the specified file name, e.g. stats-1.csv, stats-2.csv, etc.
 
 MAPFILE
 -------

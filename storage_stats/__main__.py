@@ -29,6 +29,8 @@ def main(args=None):
                                  description="Calculates file size statistics for the specified folder(s).",
                                  epilog="""If multiple folders are specified, the results are aggregated
                                          together, unless the --no-aggregation flag is used.
+                                         If --no-aggregation is used along with -o (output csv file), one csv file
+                                         will be created for each directory specified.
                                          MAPFILE should be a text file with one group of similar file
                                          extensions per line, separated by commas. Each line should be in
                                          lowercase and take the form: \".main_ext,.alt1,.alt2,etc\". For example:
