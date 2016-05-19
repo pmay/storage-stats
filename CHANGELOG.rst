@@ -4,6 +4,19 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
+[Unreleased]
+------------
+
+Added
+~~~~~
+* Enabled support for specifying multiple paths. Results are aggregated together by default unless --no-aggregation
+  flag is used
+
+Fixed
+~~~~~
+* Corrected problems with writing to CSV files
+
+
 [0.3.1] - 2016-05-18
 --------------------
 

@@ -171,7 +171,7 @@ class Characteriser(object):
         """
 
         # get number of files - have to scan dir once to start with
-        print "Initialising..."
+        print "\n\rProcessing {0}...".format(path)
         bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength)
 
         # If user wants more accurate timing, preprocess directory to count files
@@ -223,17 +223,22 @@ class Characteriser(object):
                                    self.filestats[ext].sd(),
                                    self.filestats[ext].getmax())
 
-    def write_csv(self, csv_file):
+    def write_csv(self, csv_file, strindex=None):
         """ Writes the file size statistics to the specified CSV file
         :param csv_file: path of the CSV file to create
+        :param strindex: if specified, an index number to append to the filename
         :return:
         """
-        with open(csv_file, 'wb') as csvfile:
+        filename = csv_file
+        if strindex is not None:
+            filename = csv_file[0:-4]+"-"+str(strindex)+csv_file[-4:]
+
+        with open(filename, 'wb') as csvfile:
             statswriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             header = ['Ext', '# Values', 'Min Size (bytes)', 'Mean Size (bytes)', 'S.D.', 'Max Size (bytes)']
             statswriter.writerow(header)
 
-            for ext in self.filestats.keys():
+            for ext in sorted(self.filestats.keys()):
                 stats = self.filestats[ext]
-                row = [ext, stats.numberValues(), stats.getMin(), stats.getMean(), stats.sd(), stats.getMax()]
+                row = [ext, stats.numbervalues(), stats.getmin(), stats.getmean(), stats.sd(), stats.getmax()]
                 statswriter.writerow(row)
