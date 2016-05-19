@@ -16,21 +16,24 @@ Intallation
 Documentation
 =============
 
-Usage: ``storage_stats [-h] [-e MAPFILE] [-o OUTPUT] [--no-recursion] [--no-timing] [-s] [-v] path``
+Usage: ``storage_stats [-h] [-e MAPFILE] [-o OUTPUT] [--no-aggregation] [--no-recursion] [--no-timing] [-s] [-v] path [path ...] ``
 
-Calculates file size statistics for the specified folder
+Calculates file size statistics for the specified folder(s).
 
 positional arguments:
-  path            the folder to characterise
+  path(s)            the folder(s) to characterise
 
 optional arguments:
   -h, --help        Show the help message and exit
   -e MAPFILE        User file overriding similar extension mappings
   -o OUTPUT         CSV file to output statistics too
+  --no-aggregation  Do not aggregate results from all specified paths together
   --no-recursion    Do not include sub-folders in stats
   --no-timing       Turn off preprocessing of directory to improve run-time (no timing information provided)
   -s, --silent      Turn off command line output (useful if you just want to output a CSV file)
   -v, --version     Provide the version of this application
+
+If multiple folders are specified, the results are aggregated together, unless the --no-aggregation flag is used.
 
 MAPFILE
 -------
