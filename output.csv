@@ -1,0 +1,4 @@
+Ext,# Values,Min Size (bytes),Mean Size (bytes),S.D.,Max Size (bytes)
+,1,10,10.0,0.0,10
+.jpg,2,2814,2814.0,0.0,2814
+.tiff,1,2814,2814.0,0.0,2814
